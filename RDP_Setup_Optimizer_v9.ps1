@@ -3,7 +3,7 @@
     RDP Setup & Optimizer v9.0 - Lightning Edition
 .DESCRIPTION
     Phase 1: System Optimization (25 steps) - REVERSED (UI first!)
-    Phase 2: Software Installation (22 steps) - FASTEST mode
+    Phase 2: Software Installation (20 steps) - FASTEST mode - Python first!
     Features: Live Terminal Box, Parallel installs, Bulletproof ANSI
     Works via: irm https://raw.githubusercontent.com/.../RDP_Setup_Optimizer_v9.ps1 | iex
 .VERSION
@@ -82,6 +82,7 @@ function LogIt {
     $t=Get-Date -Format "HH:mm:ss"
     $script:Logs+=@{T=$t;M=$M;L=$L}
     if($script:Logs.Count-gt 100){$script:Logs=$script:Logs[-100..-1]}
+    Add-Content -Path "$env:TEMP\RDP_Setup_Optimizer_v9_Log.txt" -Value "[$t] [$L] $M"
 }
 
 function TermLog {
@@ -192,30 +193,28 @@ $script:P1Tasks = @(
     @{ID=25;N="Enable Ultimate Performance";I="⚡";S="Wait";Desc="Activating Ultimate Performance power plan..."}
 )
 
-# === PHASE 2 TASKS ===
+# === PHASE 2 TASKS (PYTHON + VS CODE FIRST, NO AUTO-UPDATE) ===
 $script:P2Tasks = @(
-    @{ID=1;N="VLC Media Player";I="🎬";S="Wait";Desc="Installing VLC Media Player..."},
-    @{ID=2;N="K-Lite Codec Pack (Full)";I="🎞️";S="Wait";Desc="Installing K-Lite Codec Pack Full..."},
-    @{ID=3;N="WinRAR";I="📦";S="Wait";Desc="Installing WinRAR..."},
-    @{ID=4;N="7-Zip";I="🗜️";S="Wait";Desc="Installing 7-Zip..."},
-    @{ID=5;N="Steam";I="🎮";S="Wait";Desc="Installing Steam..."},
-    @{ID=6;N="Xbox App";I="🎯";S="Wait";Desc="Installing Xbox App..."},
-    @{ID=7;N="Microsoft Store Reset";I="🏪";S="Wait";Desc="Resetting Microsoft Store (wsreset)..."},
-    @{ID=8;N="Xbox Identity Provider";I="🆔";S="Wait";Desc="Installing Xbox Identity Provider..."},
-    @{ID=9;N="Xbox In-Game Experience";I="🕹️";S="Wait";Desc="Installing Xbox In-Game Experience..."},
-    @{ID=10;N="Microsoft Store Verify";I="✅";S="Wait";Desc="Verifying Microsoft Store..."},
-    @{ID=11;N="Node.js LTS";I="🟢";S="Wait";Desc="Installing Node.js LTS + npm..."},
-    @{ID=12;N="Git";I="🌿";S="Wait";Desc="Installing Git..."},
-    @{ID=13;N="Python 3.10";I="🐍";S="Wait";Desc="Installing Python 3.10..."},
-    @{ID=14;N="Python 3.11";I="🐍";S="Wait";Desc="Installing Python 3.11..."},
-    @{ID=15;N="Python 3.12";I="🐍";S="Wait";Desc="Installing Python 3.12..."},
-    @{ID=16;N="Python 3.13";I="🐍";S="Wait";Desc="Installing Python 3.13..."},
-    @{ID=17;N="Python 3.14";I="🐍";S="Wait";Desc="Installing Python 3.14..."},
-    @{ID=18;N="Python Dev Modules";I="🔧";S="Wait";Desc="Installing pip, setuptools, wheel, pytest, black, ruff, mypy, bandit..."},
-    @{ID=19;N="VS Code";I="📝";S="Wait";Desc="Installing Visual Studio Code..."},
-    @{ID=20;N="Internet Download Manager";I="⬇️";S="Wait";Desc="Installing IDM..."},
-    @{ID=21;N="Update All Apps";I="🔄";S="Wait";Desc="Updating all winget packages..."},
-    @{ID=22;N="Windows Update";I="🪟";S="Wait";Desc="Installing Windows Updates..."}
+    @{ID=1;N="Python 3.10";I="🐍";S="Wait";Desc="Installing Python 3.10..."},
+    @{ID=2;N="Python 3.11";I="🐍";S="Wait";Desc="Installing Python 3.11..."},
+    @{ID=3;N="Python 3.12";I="🐍";S="Wait";Desc="Installing Python 3.12..."},
+    @{ID=4;N="Python 3.13";I="🐍";S="Wait";Desc="Installing Python 3.13..."},
+    @{ID=5;N="Python 3.14";I="🐍";S="Wait";Desc="Installing Python 3.14..."},
+    @{ID=6;N="Python Essential Modules";I="🔧";S="Wait";Desc="Installing colorama, flask, requests, numpy, pandas + all essential libraries..."},
+    @{ID=7;N="VS Code";I="📝";S="Wait";Desc="Installing Visual Studio Code..."},
+    @{ID=8;N="VLC Media Player";I="🎬";S="Wait";Desc="Installing VLC Media Player..."},
+    @{ID=9;N="K-Lite Codec Pack (Full)";I="🎞️";S="Wait";Desc="Installing K-Lite Codec Pack Full..."},
+    @{ID=10;N="WinRAR";I="📦";S="Wait";Desc="Installing WinRAR..."},
+    @{ID=11;N="7-Zip";I="🗜️";S="Wait";Desc="Installing 7-Zip..."},
+    @{ID=12;N="Steam";I="🎮";S="Wait";Desc="Installing Steam..."},
+    @{ID=13;N="Xbox App";I="🎯";S="Wait";Desc="Installing Xbox App..."},
+    @{ID=14;N="Microsoft Store Reset";I="🏪";S="Wait";Desc="Resetting Microsoft Store (wsreset)..."},
+    @{ID=15;N="Xbox Identity Provider";I="🆔";S="Wait";Desc="Installing Xbox Identity Provider..."},
+    @{ID=16;N="Xbox In-Game Experience";I="🕹️";S="Wait";Desc="Installing Xbox In-Game Experience..."},
+    @{ID=17;N="Microsoft Store Verify";I="✅";S="Wait";Desc="Verifying Microsoft Store..."},
+    @{ID=18;N="Node.js LTS";I="🟢";S="Wait";Desc="Installing Node.js LTS + npm..."},
+    @{ID=19;N="Git";I="🌿";S="Wait";Desc="Installing Git..."},
+    @{ID=20;N="Internet Download Manager";I="⬇️";S="Wait";Desc="Installing IDM..."}
 )
 
 # === DRAW DASHBOARD ===
@@ -651,52 +650,169 @@ function Run-Phase2 {
     $script:PhaseNum=2
     $script:StartTime=Get-Date
     LogIt "=== PHASE 2: SOFTWARE INSTALLATION STARTED ===" "INFO"
-    TermLog "=== Phase 2: Software Installation ==="
+    TermLog "=== Phase 2: Software Installation (Python first) ==="
 
     $t=$script:P2Tasks
 
-    # S01 - VLC
+    # S01 - Python 3.10
     RunStep 0 {
+        LogIt "Installing Python 3.10..." "INFO"
+        $ok = Install-WingetFast -Id "Python.Python.3.10" -Description "Python 3.10" -ExtraArgs '--scope machine --override "/quiet InstallAllUsers=1 PrependPath=1 Include_launcher=1 InstallLauncherAllUsers=1 Include_pip=1 Include_test=0"'
+        if($ok) {
+            $pyPath="C:\Program Files\Python310";$scriptsPath="C:\Program Files\Python310\Scripts"
+            $machinePath=[Environment]::GetEnvironmentVariable("Path","Machine")
+            foreach($p in @($pyPath,$scriptsPath)){if($machinePath -notlike "*$p*"){$machinePath=$machinePath.TrimEnd(";")+";"+$p}}
+            [Environment]::SetEnvironmentVariable("Path",$machinePath,"Machine")
+            $env:Path=$machinePath+";"+[Environment]::GetEnvironmentVariable("Path","User")
+        }
+        return $ok
+    } $t
+
+    # S02 - Python 3.11
+    RunStep 1 {
+        LogIt "Installing Python 3.11..." "INFO"
+        $ok = Install-WingetFast -Id "Python.Python.3.11" -Description "Python 3.11" -ExtraArgs '--scope machine --override "/quiet InstallAllUsers=1 PrependPath=1 Include_launcher=1 InstallLauncherAllUsers=1 Include_pip=1 Include_test=0"'
+        if($ok) {
+            $pyPath="C:\Program Files\Python311";$scriptsPath="C:\Program Files\Python311\Scripts"
+            $machinePath=[Environment]::GetEnvironmentVariable("Path","Machine")
+            foreach($p in @($pyPath,$scriptsPath)){if($machinePath -notlike "*$p*"){$machinePath=$machinePath.TrimEnd(";")+";"+$p}}
+            [Environment]::SetEnvironmentVariable("Path",$machinePath,"Machine")
+            $env:Path=$machinePath+";"+[Environment]::GetEnvironmentVariable("Path","User")
+        }
+        return $ok
+    } $t
+
+    # S03 - Python 3.12
+    RunStep 2 {
+        LogIt "Installing Python 3.12..." "INFO"
+        $ok = Install-WingetFast -Id "Python.Python.3.12" -Description "Python 3.12" -ExtraArgs '--scope machine --override "/quiet InstallAllUsers=1 PrependPath=1 Include_launcher=1 InstallLauncherAllUsers=1 Include_pip=1 Include_test=0"'
+        if($ok) {
+            $pyPath="C:\Program Files\Python312";$scriptsPath="C:\Program Files\Python312\Scripts"
+            $machinePath=[Environment]::GetEnvironmentVariable("Path","Machine")
+            foreach($p in @($pyPath,$scriptsPath)){if($machinePath -notlike "*$p*"){$machinePath=$machinePath.TrimEnd(";")+";"+$p}}
+            [Environment]::SetEnvironmentVariable("Path",$machinePath,"Machine")
+            $env:Path=$machinePath+";"+[Environment]::GetEnvironmentVariable("Path","User")
+        }
+        return $ok
+    } $t
+
+    # S04 - Python 3.13
+    RunStep 3 {
+        LogIt "Installing Python 3.13..." "INFO"
+        $ok = Install-WingetFast -Id "Python.Python.3.13" -Description "Python 3.13" -ExtraArgs '--scope machine --override "/quiet InstallAllUsers=1 PrependPath=1 Include_launcher=1 InstallLauncherAllUsers=1 Include_pip=1 Include_test=0"'
+        if($ok) {
+            $pyPath="C:\Program Files\Python313";$scriptsPath="C:\Program Files\Python313\Scripts"
+            $machinePath=[Environment]::GetEnvironmentVariable("Path","Machine")
+            foreach($p in @($pyPath,$scriptsPath)){if($machinePath -notlike "*$p*"){$machinePath=$machinePath.TrimEnd(";")+";"+$p}}
+            [Environment]::SetEnvironmentVariable("Path",$machinePath,"Machine")
+            $env:Path=$machinePath+";"+[Environment]::GetEnvironmentVariable("Path","User")
+        }
+        return $ok
+    } $t
+
+    # S05 - Python 3.14
+    RunStep 4 {
+        LogIt "Installing Python 3.14..." "INFO"
+        $ok = Install-WingetFast -Id "Python.Python.3.14" -Description "Python 3.14" -ExtraArgs '--scope machine --override "/quiet InstallAllUsers=1 PrependPath=1 Include_launcher=1 InstallLauncherAllUsers=1 Include_pip=1 Include_test=0"'
+        if($ok) {
+            $pyPath="C:\Program Files\Python314";$scriptsPath="C:\Program Files\Python314\Scripts"
+            $machinePath=[Environment]::GetEnvironmentVariable("Path","Machine")
+            foreach($p in @($pyPath,$scriptsPath)){if($machinePath -notlike "*$p*"){$machinePath=$machinePath.TrimEnd(";")+";"+$p}}
+            [Environment]::SetEnvironmentVariable("Path",$machinePath,"Machine")
+            $env:Path=$machinePath+";"+[Environment]::GetEnvironmentVariable("Path","User")
+        }
+        return $ok
+    } $t
+
+    # S06 - Python Essential Modules (colorama, flask, requests, numpy, pandas + more)
+    RunStep 5 {
+        LogIt "Installing Python essential modules..." "INFO"
+        TermLog ">>> Installing Python Essential Modules (colorama, flask, requests, numpy, pandas + more)"
+        $packages=@(
+            "pip","setuptools","wheel","virtualenv","build","pip-audit",
+            "pytest","black","ruff","mypy","bandit",
+            "colorama","rich","click","tqdm","python-dotenv","pyyaml",
+            "requests","httpx","flask","django","fastapi","uvicorn",
+            "numpy","pandas","matplotlib","scipy","pillow"
+        )
+        $versions=@("3.10","3.11","3.12","3.13","3.14")
+        foreach($v in $versions){
+            try {
+                & py "-$v" --version 2>$null | Out-Null
+                if($LASTEXITCODE -eq 0){
+                    TermLog "  Upgrading pip for Python $v..."
+                    & py "-$v" -m ensurepip --upgrade 2>$null | Out-Null
+                    & py "-$v" -m pip install --upgrade $packages 2>$null | Out-Null
+                    if($LASTEXITCODE -eq 0){TermLog "  [OK] Python $v modules installed"}
+                    else{TermLog "  [WARN] Python $v pip exit code: $LASTEXITCODE"}
+                } else {
+                    TermLog "  [SKIP] Python $v not available"
+                }
+            } catch { TermLog "  [SKIP] Python $v not available" }
+        }
+        return $true
+    } $t
+
+    # S07 - VS Code
+    RunStep 6 {
+        LogIt "Installing VS Code..." "INFO"
+        TermLog ">>> Installing Visual Studio Code"
+        # FIX: Use single-quoted override to prevent PowerShell from parsing commas as array separators
+        $ok = Install-WingetFast -Id "Microsoft.VisualStudioCode" -Description "VS Code" -ExtraArgs '--scope machine --override "/VERYSILENT /NORESTART /MERGETASKS=addcontextmenufiles,addcontextmenufolders,associatewithfiles,addtopath"'
+        if($ok) {
+            $codePath="C:\Program Files\Microsoft VS Code\bin"
+            $machinePath=[Environment]::GetEnvironmentVariable("Path","Machine")
+            if(Test-Path $codePath -and $machinePath -notlike "*$codePath*"){
+                [Environment]::SetEnvironmentVariable("Path",($machinePath.TrimEnd(";")+";"+$codePath),"Machine")
+            }
+            $env:Path=[Environment]::GetEnvironmentVariable("Path","Machine")+";"+[Environment]::GetEnvironmentVariable("Path","User")
+            TermLog "[OK] VS Code installed successfully"
+        }
+        return $ok
+    } $t
+
+    # S08 - VLC
+    RunStep 7 {
         LogIt "Installing VLC Media Player..." "INFO"
         return (Install-WingetFast -Id "VideoLAN.VLC" -Description "VLC Media Player")
     } $t
 
-    # S02 - K-Lite
-    RunStep 1 {
+    # S09 - K-Lite
+    RunStep 8 {
         LogIt "Installing K-Lite Codec Pack Full..." "INFO"
         return (Install-WingetFast -Id "CodecGuide.K-LiteCodecPack.Full" -Description "K-Lite Codec Pack")
     } $t
 
-    # S03 - WinRAR
-    RunStep 2 {
+    # S10 - WinRAR
+    RunStep 9 {
         LogIt "Installing WinRAR..." "INFO"
         return (Install-WingetFast -Id "RARLab.WinRAR" -Description "WinRAR")
     } $t
 
-    # S04 - 7Zip
-    RunStep 3 {
+    # S11 - 7Zip
+    RunStep 10 {
         LogIt "Installing 7-Zip..." "INFO"
         return (Install-WingetFast -Id "7zip.7zip" -Description "7-Zip")
     } $t
 
-    # S05 - Steam
-    RunStep 4 {
+    # S12 - Steam
+    RunStep 11 {
         LogIt "Installing Steam..." "INFO"
         $ok = Install-WingetFast -Id "Valve.Steam" -Description "Steam"
         if($ok -and (Test-Path "C:\Program Files (x86)\Steam\steam.exe")){Start-Process "C:\Program Files (x86)\Steam\steam.exe"}
         return $ok
     } $t
 
-    # S06 - Xbox
-    RunStep 5 {
+    # S13 - Xbox
+    RunStep 12 {
         LogIt "Installing Xbox App..." "INFO"
         $ok = Install-WingetFast -Id "9MV0B5HZVK9Z" -Description "Xbox App" -ExtraArgs "--source msstore"
         if($ok){Start-Process "xbox:"}
         return $ok
     } $t
 
-    # S07 - MS Store Reset (wsreset)
-    RunStep 6 {
+    # S14 - MS Store Reset (wsreset)
+    RunStep 13 {
         LogIt "Resetting Microsoft Store (wsreset)..." "INFO"
         TermLog ">>> Resetting Microsoft Store"
         TermLog "> wsreset -i"
@@ -709,20 +825,20 @@ function Run-Phase2 {
         return $true
     } $t
 
-    # S08 - Xbox Identity
-    RunStep 7 {
+    # S15 - Xbox Identity
+    RunStep 14 {
         LogIt "Installing Xbox Identity Provider..." "INFO"
         return (Install-WingetFast -Id "9WZDNCRD1HKW" -Description "Xbox Identity Provider" -ExtraArgs "--source msstore")
     } $t
 
-    # S09 - Xbox In-Game
-    RunStep 8 {
+    # S16 - Xbox In-Game
+    RunStep 15 {
         LogIt "Installing Xbox In-Game Experience..." "INFO"
         return (Install-WingetFast -Id "9NZKPSTSNW4P" -Description "Xbox In-Game" -ExtraArgs "--source msstore")
     } $t
 
-    # S10 - MS Store Verify (wsreset again)
-    RunStep 9 {
+    # S17 - MS Store Verify (wsreset again)
+    RunStep 16 {
         LogIt "Verifying Microsoft Store..." "INFO"
         TermLog ">>> Verifying Microsoft Store"
         TermLog "> wsreset -i"
@@ -735,8 +851,8 @@ function Run-Phase2 {
         return $true
     } $t
 
-    # S11 - Node.js
-    RunStep 10 {
+    # S18 - Node.js
+    RunStep 17 {
         LogIt "Installing Node.js LTS..." "INFO"
         $ok = Install-WingetFast -Id "OpenJS.NodeJS.LTS" -Description "Node.js LTS" -ExtraArgs "--scope machine"
         if(-not $ok) {
@@ -757,8 +873,8 @@ function Run-Phase2 {
         return $true
     } $t
 
-    # S12 - Git
-    RunStep 11 {
+    # S19 - Git
+    RunStep 18 {
         LogIt "Installing Git..." "INFO"
         $ok = Install-WingetFast -Id "Git.Git" -Description "Git" -ExtraArgs "--scope machine"
         if(-not $ok) {
@@ -779,114 +895,6 @@ function Run-Phase2 {
         return $true
     } $t
 
-    # S13 - Python 3.10
-    RunStep 12 {
-        LogIt "Installing Python 3.10..." "INFO"
-        $ok = Install-WingetFast -Id "Python.Python.3.10" -Description "Python 3.10" -ExtraArgs '--scope machine --override "/quiet InstallAllUsers=1 PrependPath=1 Include_launcher=1 InstallLauncherAllUsers=1 Include_pip=1 Include_test=0"'
-        if($ok) {
-            $pyPath="C:\Program Files\Python310";$scriptsPath="C:\Program Files\Python310\Scripts"
-            $machinePath=[Environment]::GetEnvironmentVariable("Path","Machine")
-            foreach($p in @($pyPath,$scriptsPath)){if($machinePath -notlike "*$p*"){$machinePath=$machinePath.TrimEnd(";")+";"+$p}}
-            [Environment]::SetEnvironmentVariable("Path",$machinePath,"Machine")
-            $env:Path=$machinePath+";"+[Environment]::GetEnvironmentVariable("Path","User")
-        }
-        return $ok
-    } $t
-
-    # S14 - Python 3.11
-    RunStep 13 {
-        LogIt "Installing Python 3.11..." "INFO"
-        $ok = Install-WingetFast -Id "Python.Python.3.11" -Description "Python 3.11" -ExtraArgs '--scope machine --override "/quiet InstallAllUsers=1 PrependPath=1 Include_launcher=1 InstallLauncherAllUsers=1 Include_pip=1 Include_test=0"'
-        if($ok) {
-            $pyPath="C:\Program Files\Python311";$scriptsPath="C:\Program Files\Python311\Scripts"
-            $machinePath=[Environment]::GetEnvironmentVariable("Path","Machine")
-            foreach($p in @($pyPath,$scriptsPath)){if($machinePath -notlike "*$p*"){$machinePath=$machinePath.TrimEnd(";")+";"+$p}}
-            [Environment]::SetEnvironmentVariable("Path",$machinePath,"Machine")
-            $env:Path=$machinePath+";"+[Environment]::GetEnvironmentVariable("Path","User")
-        }
-        return $ok
-    } $t
-
-    # S15 - Python 3.12
-    RunStep 14 {
-        LogIt "Installing Python 3.12..." "INFO"
-        $ok = Install-WingetFast -Id "Python.Python.3.12" -Description "Python 3.12" -ExtraArgs '--scope machine --override "/quiet InstallAllUsers=1 PrependPath=1 Include_launcher=1 InstallLauncherAllUsers=1 Include_pip=1 Include_test=0"'
-        if($ok) {
-            $pyPath="C:\Program Files\Python312";$scriptsPath="C:\Program Files\Python312\Scripts"
-            $machinePath=[Environment]::GetEnvironmentVariable("Path","Machine")
-            foreach($p in @($pyPath,$scriptsPath)){if($machinePath -notlike "*$p*"){$machinePath=$machinePath.TrimEnd(";")+";"+$p}}
-            [Environment]::SetEnvironmentVariable("Path",$machinePath,"Machine")
-            $env:Path=$machinePath+";"+[Environment]::GetEnvironmentVariable("Path","User")
-        }
-        return $ok
-    } $t
-
-    # S16 - Python 3.13
-    RunStep 15 {
-        LogIt "Installing Python 3.13..." "INFO"
-        $ok = Install-WingetFast -Id "Python.Python.3.13" -Description "Python 3.13" -ExtraArgs '--scope machine --override "/quiet InstallAllUsers=1 PrependPath=1 Include_launcher=1 InstallLauncherAllUsers=1 Include_pip=1 Include_test=0"'
-        if($ok) {
-            $pyPath="C:\Program Files\Python313";$scriptsPath="C:\Program Files\Python313\Scripts"
-            $machinePath=[Environment]::GetEnvironmentVariable("Path","Machine")
-            foreach($p in @($pyPath,$scriptsPath)){if($machinePath -notlike "*$p*"){$machinePath=$machinePath.TrimEnd(";")+";"+$p}}
-            [Environment]::SetEnvironmentVariable("Path",$machinePath,"Machine")
-            $env:Path=$machinePath+";"+[Environment]::GetEnvironmentVariable("Path","User")
-        }
-        return $ok
-    } $t
-
-    # S17 - Python 3.14
-    RunStep 16 {
-        LogIt "Installing Python 3.14..." "INFO"
-        $ok = Install-WingetFast -Id "Python.Python.3.14" -Description "Python 3.14" -ExtraArgs '--scope machine --override "/quiet InstallAllUsers=1 PrependPath=1 Include_launcher=1 InstallLauncherAllUsers=1 Include_pip=1 Include_test=0"'
-        if($ok) {
-            $pyPath="C:\Program Files\Python314";$scriptsPath="C:\Program Files\Python314\Scripts"
-            $machinePath=[Environment]::GetEnvironmentVariable("Path","Machine")
-            foreach($p in @($pyPath,$scriptsPath)){if($machinePath -notlike "*$p*"){$machinePath=$machinePath.TrimEnd(";")+";"+$p}}
-            [Environment]::SetEnvironmentVariable("Path",$machinePath,"Machine")
-            $env:Path=$machinePath+";"+[Environment]::GetEnvironmentVariable("Path","User")
-        }
-        return $ok
-    } $t
-
-    # S18 - Python Modules
-    RunStep 17 {
-        LogIt "Installing Python dev modules..." "INFO"
-        TermLog ">>> Installing Python Dev Modules"
-        $versions=@("3.10","3.11","3.12","3.13","3.14")
-        foreach($v in $versions){
-            $py="py -$v"
-            try {
-                & $py --version 2>$null | Out-Null
-                if($LASTEXITCODE -eq 0){
-                    TermLog "  Upgrading pip for Python $v..."
-                    & $py -m ensurepip --upgrade 2>$null | Out-Null
-                    & $py -m pip install --upgrade pip setuptools wheel virtualenv build pytest black ruff mypy bandit pip-audit 2>$null | Out-Null
-                    TermLog "  [OK] Python $v modules installed"
-                }
-            } catch { TermLog "  [SKIP] Python $v not available" }
-        }
-        return $true
-    } $t
-
-    # S19 - VS Code (FIXED!)
-    RunStep 18 {
-        LogIt "Installing VS Code..." "INFO"
-        TermLog ">>> Installing Visual Studio Code"
-        # FIX: Use single-quoted override to prevent PowerShell from parsing commas as array separators
-        $ok = Install-WingetFast -Id "Microsoft.VisualStudioCode" -Description "VS Code" -ExtraArgs '--scope machine --override "/VERYSILENT /NORESTART /MERGETASKS=addcontextmenufiles,addcontextmenufolders,associatewithfiles,addtopath"'
-        if($ok) {
-            $codePath="C:\Program Files\Microsoft VS Code\bin"
-            $machinePath=[Environment]::GetEnvironmentVariable("Path","Machine")
-            if(Test-Path $codePath -and $machinePath -notlike "*$codePath*"){
-                [Environment]::SetEnvironmentVariable("Path",($machinePath.TrimEnd(";")+";"+$codePath),"Machine")
-            }
-            $env:Path=[Environment]::GetEnvironmentVariable("Path","Machine")+";"+[Environment]::GetEnvironmentVariable("Path","User")
-            TermLog "[OK] VS Code installed successfully"
-        }
-        return $ok
-    } $t
-
     # S20 - IDM
     RunStep 19 {
         LogIt "Installing Internet Download Manager..." "INFO"
@@ -900,32 +908,6 @@ function Run-Phase2 {
         $installed=Get-ItemProperty "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*","HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*" -ErrorAction SilentlyContinue | Where-Object {$_.DisplayName -like "*Internet Download Manager*"}
         if($installed){TermLog "[OK] IDM installed";return $true}
         return $false
-    } $t
-
-    # S21 - Apps Update
-    RunStep 20 {
-        LogIt "Updating all winget packages..." "INFO"
-        TermLog ">>> Updating All Winget Packages"
-        TermLog "> winget source update"
-        winget source update | Out-Null
-        TermLog "> winget upgrade --all ..."
-        winget upgrade --all --silent --accept-package-agreements --accept-source-agreements --include-unknown --disable-interactivity | Out-Null
-        TermLog "[OK] All packages updated"
-        return $true
-    } $t
-
-    # S22 - Windows Update
-    RunStep 21 {
-        LogIt "Installing Windows Updates..." "INFO"
-        TermLog ">>> Installing Windows Updates"
-        Set-ExecutionPolicy Bypass -Scope Process -Force
-        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
-        Install-Module PSWindowsUpdate -Force -AllowClobber | Out-Null
-        Import-Module PSWindowsUpdate
-        TermLog "> Getting and installing Windows Updates..."
-        Get-WindowsUpdate -AcceptAll -Install -AutoReboot | Out-Null
-        TermLog "[OK] Windows Updates installed"
-        return $true
     } $t
 
     $script:CurrentTask=$null
@@ -954,7 +936,7 @@ function Show-Summary {
     WC "  │$($script:C.B)$($script:C.NC)  FINAL REPORT                                                                                                    $($script:C.X)│" "NC"
     WC "  ├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤" "NC"
     WC ("  │  $($script:C.LG)✅ Phase 1 (Optimization):  {0,2} / 25 passed$($script:C.X)    $($script:C.LR)❌ Failed: {1,2}$($script:C.X)                                          │" -f $p1Done,$p1Fail) "NC"
-    WC ("  │  $($script:C.LG)✅ Phase 2 (Software):     {0,2} / 22 passed$($script:C.X)    $($script:C.LR)❌ Failed: {1,2}$($script:C.X)                                          │" -f $p2Done,$p2Fail) "NC"
+    WC ("  │  $($script:C.LG)✅ Phase 2 (Software):     {0,2} / 20 passed$($script:C.X)    $($script:C.LR)❌ Failed: {1,2}$($script:C.X)                                          │" -f $p2Done,$p2Fail) "NC"
     WC ("  │  $($script:C.SI)⏱ Total Time: {0:D2}h {1:D2}m {2:D2}s$($script:C.X)                                                                              │" -f $tt.Hours,$tt.Minutes,$tt.Seconds) "NC"
     WC "  └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘" "NC"
     WC ""
@@ -1000,7 +982,7 @@ function Show-MainMenu {
     WC "  │                                                                                                                  │" "NC"
     WC "  │   $($script:C.NG)[1]$($script:C.X)  $($script:C.B)Phase 1: System Optimization$($script:C.X)        $($script:C.GY)- 25 tweaks (UI-FIRST: Taskbar → Theme → Icons → ... → Power)$($script:C.X)   │" "NC"
     WC "  │                                                                                                                  │" "NC"
-    WC "  │   $($script:C.NC)[2]$($script:C.X)  $($script:C.B)Phase 2: Software Installation$($script:C.X)    $($script:C.GY)- 22 apps with LIVE TERMINAL + FAST mode$($script:C.X)                    │" "NC"
+    WC "  │   $($script:C.NC)[2]$($script:C.X)  $($script:C.B)Phase 2: Software Installation$($script:C.X)    $($script:C.GY)- 20 apps with LIVE TERMINAL + FAST mode$($script:C.X)                    │" "NC"
     WC "  │                                                                                                                  │" "NC"
     WC "  │   $($script:C.NP)[3]$($script:C.X)  $($script:C.B)Phase 1 + 2: Complete Setup$($script:C.X)    $($script:C.GY)- Run everything (Recommended)$($script:C.X)                          │" "NC"
     WC "  │                                                                                                                  │" "NC"
@@ -1020,6 +1002,16 @@ function Start-RDPSetupOptimizer {
         WC "";WC "  $($script:C.LR)❌ ERROR: Administrator privileges required! Right-click PowerShell → 'Run as Administrator'.$($script:C.X)" "LR";WC ""
         return
     }
+
+    # === FIX: Prevent RDP idle-disconnect / forced logoff during long runs ===
+    $tsKey="HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"
+    if(!(Test-Path $tsKey)){New-Item -Path $tsKey -Force|Out-Null}
+    New-ItemProperty -Path $tsKey -Name "MaxIdleTime" -Value 0 -PropertyType DWord -Force|Out-Null
+    New-ItemProperty -Path $tsKey -Name "MaxDisconnectionTime" -Value 0 -PropertyType DWord -Force|Out-Null
+    New-ItemProperty -Path $tsKey -Name "KeepAliveEnable" -Value 1 -PropertyType DWord -Force|Out-Null
+    New-ItemProperty -Path $tsKey -Name "KeepAliveInterval" -Value 1 -PropertyType DWord -Force|Out-Null
+    New-ItemProperty -Path $tsKey -Name "fDisableAutoReconnect" -Value 0 -PropertyType DWord -Force|Out-Null
+    LogIt "FIX: RDP idle-disconnect & forced logoff disabled (keep-alive ON)" "OK"
 
     [Console]::OutputEncoding=[System.Text.Encoding]::UTF8
     $Host.UI.RawUI.WindowTitle="RDP Setup & Optimizer v9.0 - Lightning"
